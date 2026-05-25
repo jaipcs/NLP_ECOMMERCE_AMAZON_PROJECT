@@ -454,35 +454,59 @@ elif page == "📊 EDA Dashboard":
 
     st.pyplot(fig)
 
-    # ========================================================
-    # WORD CLOUD
-    # ========================================================
+# ========================================================
+# WORD CLOUD
+# ========================================================
 
-    st.subheader("Word Cloud")
+st.subheader("Word Cloud")
 
-    all_words = " ".join(
-        df["clean_review"].astype(str)
+# CLEAN SAFE TEXT
+
+clean_reviews = (
+
+    df["clean_review"]
+
+    .fillna("")
+
+    .astype(str)
+
+)
+
+# COMBINE TEXT
+
+all_words = " ".join(clean_reviews)
+
+# REMOVE EXTRA SPACES
+
+all_words = all_words.strip()
+
+# CHECK EMPTY TEXT
+
+if len(all_words) > 0:
+
+    wordcloud = WordCloud(
+
+        width=1200,
+        height=500,
+        background_color="white"
+
+    ).generate(all_words)
+
+    fig, ax = plt.subplots(
+        figsize=(15,7)
     )
 
-    if len(all_words.strip()) > 0:
+    ax.imshow(wordcloud)
 
-        wordcloud = WordCloud(
+    ax.axis("off")
 
-            width=1200,
-            height=500,
-            background_color="white"
+    st.pyplot(fig)
 
-        ).generate(all_words)
+else:
 
-        fig, ax = plt.subplots(
-            figsize=(15,7)
-        )
-
-        ax.imshow(wordcloud)
-
-        ax.axis("off")
-
-        st.pyplot(fig)
+    st.warning(
+        "No valid text available for Word Cloud."
+    )
 
 # ============================================================
 # PREDICTION PAGE
