@@ -454,15 +454,39 @@ elif page == "📊 EDA Dashboard":
 
     st.pyplot(fig)
 
-    # ========================================================
-    # WORD CLOUD
-    # ========================================================
+# ========================================================
+# WORD CLOUD
+# ========================================================
 
-    st.subheader("Word Cloud")
+st.subheader("Word Cloud")
+
+try:
+
+    # SAFE CLEAN TEXT
+
+    clean_reviews = (
+
+        df["clean_review"]
+
+        .fillna("")
+
+        .astype(str)
+
+    )
+
+    # REMOVE EMPTY ROWS
+
+    clean_reviews = clean_reviews[
+        clean_reviews.str.strip() != ""
+    ]
+
+    # COMBINE WORDS
 
     all_words = " ".join(
-        df["clean_review"].astype(str)
+        clean_reviews.tolist()
     )
+
+    # CHECK TEXT EXISTS
 
     if len(all_words.strip()) > 0:
 
@@ -483,6 +507,20 @@ elif page == "📊 EDA Dashboard":
         ax.axis("off")
 
         st.pyplot(fig)
+
+    else:
+
+        st.warning(
+            "No valid text available for Word Cloud."
+        )
+
+except Exception as e:
+
+    st.error(
+        "Word Cloud generation failed."
+    )
+
+    st.write(e)
 
 # ============================================================
 # PREDICTION PAGE
