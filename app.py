@@ -454,73 +454,65 @@ elif page == "📊 EDA Dashboard":
 
     st.pyplot(fig)
 
-# ========================================================
-# WORD CLOUD
-# ========================================================
+    # ========================================================
+    # WORD CLOUD
+    # ========================================================
 
-st.subheader("Word Cloud")
+    st.subheader("Word Cloud")
 
-try:
+    try:
 
-    # SAFE CLEAN TEXT
+        clean_reviews = (
 
-    clean_reviews = (
+            df["clean_review"]
 
-        df["clean_review"]
+            .fillna("")
 
-        .fillna("")
+            .astype(str)
 
-        .astype(str)
-
-    )
-
-    # REMOVE EMPTY ROWS
-
-    clean_reviews = clean_reviews[
-        clean_reviews.str.strip() != ""
-    ]
-
-    # COMBINE WORDS
-
-    all_words = " ".join(
-        clean_reviews.tolist()
-    )
-
-    # CHECK TEXT EXISTS
-
-    if len(all_words.strip()) > 0:
-
-        wordcloud = WordCloud(
-
-            width=1200,
-            height=500,
-            background_color="white"
-
-        ).generate(all_words)
-
-        fig, ax = plt.subplots(
-            figsize=(15,7)
         )
 
-        ax.imshow(wordcloud)
+        clean_reviews = clean_reviews[
+            clean_reviews.str.strip() != ""
+        ]
 
-        ax.axis("off")
-
-        st.pyplot(fig)
-
-    else:
-
-        st.warning(
-            "No valid text available for Word Cloud."
+        all_words = " ".join(
+            clean_reviews.tolist()
         )
 
-except Exception as e:
+        if len(all_words.strip()) > 0:
 
-    st.error(
-        "Word Cloud generation failed."
-    )
+            wordcloud = WordCloud(
 
-    st.write(e)
+                width=1200,
+                height=500,
+                background_color="white"
+
+            ).generate(all_words)
+
+            fig, ax = plt.subplots(
+                figsize=(15,7)
+            )
+
+            ax.imshow(wordcloud)
+
+            ax.axis("off")
+
+            st.pyplot(fig)
+
+        else:
+
+            st.warning(
+                "No valid text available for Word Cloud."
+            )
+
+    except Exception as e:
+
+        st.error(
+            "Word Cloud generation failed."
+        )
+
+        st.write(e)
 
 # ============================================================
 # PREDICTION PAGE
