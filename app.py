@@ -6,6 +6,8 @@ import re
 import nltk
 import matplotlib.pyplot as plt
 import seaborn as sns
+from deep_translator import GoogleTranslator
+from langdetect import detect
 
 from wordcloud import WordCloud
 from collections import Counter
@@ -312,6 +314,34 @@ def clean_text(text):
 
     return " ".join(words)
 
+
+# ============================================================
+# LANGUAGE DETECTION + TRANSLATION
+# ============================================================
+
+def translate_to_english(text):
+
+    try:
+
+        detected_lang = detect(text)
+
+        if detected_lang != "en":
+
+            translated_text = GoogleTranslator(
+                source="auto",
+                target="en"
+            ).translate(text)
+
+            return translated_text, detected_lang
+
+        return text, "en"
+
+    except:
+
+        return text, "unknown"
+
+
+
 # ============================================================
 # SIDEBAR
 # ============================================================
@@ -520,9 +550,7 @@ elif page == "📊 EDA Dashboard":
 
 elif page == "🔮 Predict Sentiment":
 
-    st.header(
-        "🔮 Predict Customer Review Sentiment"
-    )
+    st.header("🔮 Predict Customer Review Sentiment")
 
     user_review = st.text_area(
 
