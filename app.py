@@ -550,7 +550,9 @@ elif page == "📊 EDA Dashboard":
 
 elif page == "🔮 Predict Sentiment":
 
-    st.header("🔮 Predict Customer Review Sentiment")
+    st.header(
+        "🔮 Predict Customer Review Sentiment"
+    )
 
     user_review = st.text_area(
 
@@ -558,7 +560,17 @@ elif page == "🔮 Predict Sentiment":
 
         height=200,
 
-        placeholder="Example: Product quality is amazing and delivery was very fast..."
+        placeholder="""
+        Examples:
+
+        This product is amazing
+
+        यह उत्पाद बहुत अच्छा है
+
+        Ce produit est excellent
+
+        Este producto es fantástico
+        """
 
     )
 
@@ -572,25 +584,74 @@ elif page == "🔮 Predict Sentiment":
 
         else:
 
-            cleaned_review = clean_text(
-                user_review
+            # =====================================
+            # DETECT LANGUAGE + TRANSLATE
+            # =====================================
+
+            translated_review, detected_lang = (
+                translate_to_english(
+                    user_review
+                )
             )
+
+            st.info(
+                f"🌍 Detected Language : {detected_lang}"
+            )
+
+            # =====================================
+            # SHOW TRANSLATION
+            # =====================================
+
+            st.subheader(
+                "🌐 English Translation"
+            )
+
+            st.write(
+                translated_review
+            )
+
+            # =====================================
+            # CLEAN TEXT
+            # =====================================
+
+            cleaned_review = clean_text(
+                translated_review
+            )
+
+            # =====================================
+            # TFIDF
+            # =====================================
 
             vector_input = tfidf.transform(
                 [cleaned_review]
             )
 
+            # =====================================
+            # PREDICT
+            # =====================================
+
             prediction = model.predict(
                 vector_input
             )[0]
 
-            st.markdown("<br>", unsafe_allow_html=True)
+            st.markdown(
+                "<br>",
+                unsafe_allow_html=True
+            )
+
+            # =====================================
+            # DISPLAY RESULT
+            # =====================================
 
             if prediction == "positive":
 
                 st.markdown(
 
-                    '<div class="positive-card">😊 POSITIVE REVIEW</div>',
+                    """
+                    <div class="positive-card">
+                    😊 POSITIVE REVIEW
+                    </div>
+                    """,
 
                     unsafe_allow_html=True
 
@@ -600,7 +661,11 @@ elif page == "🔮 Predict Sentiment":
 
                 st.markdown(
 
-                    '<div class="negative-card">😡 NEGATIVE REVIEW</div>',
+                    """
+                    <div class="negative-card">
+                    😡 NEGATIVE REVIEW
+                    </div>
+                    """,
 
                     unsafe_allow_html=True
 
@@ -610,14 +675,29 @@ elif page == "🔮 Predict Sentiment":
 
                 st.markdown(
 
-                    '<div class="neutral-card">😐 NEUTRAL REVIEW</div>',
+                    """
+                    <div class="neutral-card">
+                    😐 NEUTRAL REVIEW
+                    </div>
+                    """,
 
                     unsafe_allow_html=True
 
                 )
 
-            st.markdown("<br>", unsafe_allow_html=True)
+            st.markdown(
+                "<br>",
+                unsafe_allow_html=True
+            )
 
-            st.subheader("🧹 Cleaned Review")
+            # =====================================
+            # CLEANED REVIEW
+            # =====================================
 
-            st.code(cleaned_review)
+            st.subheader(
+                "🧹 Cleaned Review"
+            )
+
+            st.code(
+                cleaned_review
+            )
