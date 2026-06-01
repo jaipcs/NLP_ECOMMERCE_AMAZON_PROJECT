@@ -6,3 +6,5 @@ seaborn
 wordcloud
 nltk
 scikit-learn
+deep-translator
+langdetect
